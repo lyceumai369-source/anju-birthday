@@ -121,7 +121,26 @@
         secret = secret.slice(-10);
       }
     });
+   // 📱 PHONE EMERGENCY UNLOCK (TAP 7 TIMES)
+let tapCount = 0;
+const secretPhoto = document.getElementById("secretPhoto");
+
+secretPhoto.addEventListener("click", () => {
+  tapCount++;
+
+  if (tapCount === 7) {
+    window.location.href = "main.html";
+  }
+
+  // reset after some time
+  setTimeout(() => {
+    tapCount = 0;
+  }, 4000);
+});
+
+
   </script>
 
 </body>
 </html>
+
