@@ -89,13 +89,9 @@
 </head>
 <body>
 
-  <!-- Floating hearts -->
   <span class="heart" style="left:15%">❤️</span>
   <span class="heart" style="left:45%; animation-delay:2s">❤️</span>
   <span class="heart" style="left:70%; animation-delay:4s">❤️</span>
-
-  <!-- Audio -->
-  <audio id="bgMusic" src="assets/music/anju-song.mp3"></audio>
 
   <div class="card">
     <div class="photo">
@@ -112,16 +108,43 @@
   </div>
 
   <script>
-    // Auto-play music after page is opened by click
+    // 1. Setup the Music
+    if (!window.bgMusic) {
+      window.bgMusic = new Audio("assets/music/anju-song.mp3");
+      window.bgMusic.loop = true;
+      window.bgMusic.volume = 0.6;
+    }
+
+    // 2. Save progress to memory
+    window.bgMusic.ontimeupdate = function() {
+      localStorage.setItem("musicTime", window.bgMusic.currentTime);
+    };
+
+    // 3. Load progress when page opens
     window.addEventListener("load", () => {
-      const music = document.getElementById("bgMusic");
-      music.volume = 0.6;
-      music.play().catch(() => {});
+      const savedTime = localStorage.getItem("musicTime");
+      if (savedTime) {
+        window.bgMusic.currentTime = parseFloat(savedTime);
+      }
+      
+      // Try to play automatically
+      window.bgMusic.play().catch(() => {
+          console.log("Music will start after clicking 'തുടങ്ങാം'");
+      });
     });
 
+    // 4. Function for the button
     function start() {
+      // Ensure music starts playing on click
+      window.bgMusic.play();
+      // Go to next page
       window.location.href = "quiz.html";
     }
+
+    // 5. Save time before leaving page
+    window.addEventListener("beforeunload", () => {
+       localStorage.setItem("musicTime", window.bgMusic.currentTime);
+    });
   </script>
 
 </body>
