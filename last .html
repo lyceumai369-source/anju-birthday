@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Anju! 🎂</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #050505;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 1.5s ease;
+    }
+
+    /* Candle Stage */
+    .cake-container {
+      position: relative;
+      cursor: pointer;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .cake-emoji {
+      font-size: 100px;
+      display: block;
+      filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.5));
+    }
+
+    .candles {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+    }
+
+    .candle {
+      width: 12px;
+      height: 40px;
+      background: linear-gradient(to bottom, #ff9ad5, #ff4f81);
+      border-radius: 5px;
+      position: relative;
+    }
+
+    .flame {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 20px;
+      background: #ffcc00;
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 15px #ffcc00, 0 0 25px #ff6600;
+      animation: flicker 0.1s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+      100% { transform: translateX(-50%) scale(1.1) rotate(2deg); opacity: 1; }
+    }
+
+    .hint {
+      color: #ffd700;
+      margin-top: 20px;
+      font-size: 18px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+    /* The Grand Reveal */
+    #wish-content {
+      display: none;
+      position: absolute;
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+      z-index: 20;
+      animation: zoomIn 1.2s forwards;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .special-image {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 20px;
+      border: 3px solid #ffd700;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      line-height: 1.5;
+      background: linear-gradient(45deg, #ffd700, #fff, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    }
+
+    .final-line {
+      color: #fff;
+      font-style: italic;
+      font-size: 1.1rem;
+      margin-top: 15px;
+      opacity: 0.8;
+    }
+
+    .confetti { position: absolute; width: 10px; height: 10px; animation: fall linear forwards; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+  </style>
+</head>
+<body>
+
+  <div id="cake-stage" class="cake-container" onclick="blowCandles()">
+    <div class="candles">
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+    </div>
+    <div class="cake-emoji">🎂</div>
+    <p class="hint">ഇവിടെ ഒന്ന് തൊടൂ മോളെ... 💨</p>
+  </div>
+
+  <div id="wish-content">
+    <img src="assets/images/birthday_final.jpg" class="special-image" alt="Happy Birthday Anju">
+    
+    <h1>Happy Birthday Anju! ❤️<br>എൻ്റെ മോൾക്ക് എല്ലാ സന്തോഷങ്ങളും ഉണ്ടാവട്ടെ,
+    Once Again Happy Birthday! ❤️.</h1>
+    
+  
+
+  <script>
+    // 1. Music Continuity Logic
+    if (!window.bgMusic) {
+      window.bgMusic = new Audio("assets/music/anju-song.mp3");
+      window.bgMusic.loop = true;
+      window.bgMusic.volume = 0.6;
+    }
+
+    // Save current time as it plays
+    window.bgMusic.ontimeupdate = function() {
+      localStorage.setItem("musicTime", window.bgMusic.currentTime);
+    };
+
+    // Load music from saved progress
+    window.addEventListener("load", () => {
+      const savedTime = localStorage.getItem("musicTime");
+      if (savedTime) {
+        window.bgMusic.currentTime = parseFloat(savedTime);
+      }
+      window.bgMusic.play().catch(() => {
+        console.log("Interaction needed to play music");
+      });
+    });
+
+    function blowCandles() {
+      // Start music on click if browser blocked autoplay
+      if (window.bgMusic.paused) {
+          window.bgMusic.play();
+      }
+
+      const flames = document.querySelectorAll('.flame');
+      flames.forEach(f => f.style.display = 'none');
+      document.querySelector('.hint').style.display = 'none';
+      document.body.style.background = "#000";
+      
+      setTimeout(() => {
+        document.getElementById('cake-stage').style.display = 'none';
+        document.getElementById('wish-content').style.display = 'block';
+        document.body.style.background = "radial-gradient(circle, #220a1a, #050505)";
+        createConfetti();
+      }, 1000);
+    }
+
+    function createConfetti() {
+      const colors = ['#ff4f81', '#ffd700', '#00d4ff', '#ffffff'];
+      for(let i = 0; i < 150; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.top = '-10px';
+        c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = Math.random() * 3 + 2 + 's';
+        c.style.opacity = Math.random();
+        document.body.appendChild(c);
+      }
+    }
+  </script>
+</body>
+</html>
