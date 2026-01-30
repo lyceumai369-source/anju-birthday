@@ -149,24 +149,19 @@
       window.bgMusic.volume = 0.6;
     }
 
-    // Save current time as it plays
     window.bgMusic.ontimeupdate = function() {
       localStorage.setItem("musicTime", window.bgMusic.currentTime);
     };
 
-    // Load music from saved progress
     window.addEventListener("load", () => {
       const savedTime = localStorage.getItem("musicTime");
       if (savedTime) {
         window.bgMusic.currentTime = parseFloat(savedTime);
       }
-      window.bgMusic.play().catch(() => {
-        console.log("Interaction needed to play music");
-      });
+      window.bgMusic.play().catch(() => {});
     });
 
     function blowCandles() {
-      // Start music on click if browser blocked autoplay
       if (window.bgMusic.paused) {
           window.bgMusic.play();
       }
@@ -180,23 +175,44 @@
         document.getElementById('cake-stage').style.display = 'none';
         document.getElementById('wish-content').style.display = 'block';
         document.body.style.background = "radial-gradient(circle, #220a1a, #050505)";
-        createConfetti();
+        
+        // START THE ENDLESS CRACKERS
+        startEndlessConfetti();
       }, 1000);
     }
 
-    function createConfetti() {
-      const colors = ['#ff4f81', '#ffd700', '#00d4ff', '#ffffff'];
-      for(let i = 0; i < 150; i++) {
+    // Function to keep the crackers falling forever
+    function startEndlessConfetti() {
+      const colors = ['#ff4f81', '#ffd700', '#00d4ff', '#ffffff', '#ff69b4'];
+      const shapes = ['❤️', '■', '●', '✦']; // Mix of hearts and paper shapes
+
+      setInterval(() => {
         const c = document.createElement('div');
         c.className = 'confetti';
+        
+        // Randomly pick a shape/cracker
+        c.innerText = shapes[Math.floor(Math.random() * shapes.length)];
+        
+        // Random Position & Style
         c.style.left = Math.random() * 100 + 'vw';
-        c.style.top = '-10px';
-        c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        c.style.animationDuration = Math.random() * 3 + 2 + 's';
-        c.style.opacity = Math.random();
+        c.style.top = '-20px';
+        c.style.color = colors[Math.floor(Math.random() * colors.length)];
+        c.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        
+        // Random fall speed
+        const duration = Math.random() * 3 + 3 + 's';
+        c.style.animation = `fall ${duration} linear forwards`;
+        
+        // Add to screen
         document.body.appendChild(c);
-      }
+
+        // Remove from memory after it falls to save phone battery
+        setTimeout(() => {
+          c.remove();
+        }, 5000);
+      }, 100); // 100ms means a new piece falls every 0.1 seconds (Continuous)
     }
   </script>
 </body>
+
 </html>
