@@ -92,9 +92,6 @@
 </head>
 <body>
 
-  <!-- SAME SONG -->
-  <audio src="assets/music/anju-song.mp3" autoplay loop></audio>
-
   <!-- floating hearts -->
   <script>
     setInterval(() => {
@@ -145,6 +142,37 @@
   background:#ff4f81;color:#fff;font-size:16px;cursor:pointer;">
   അവസാനമായി ❤️
 </button>
+<script>
+  // 1. Create the audio element globally
+  if (!window.bgMusic) {
+    window.bgMusic = new Audio("assets/music/anju-song.mp3");
+    window.bgMusic.loop = true;
+    window.bgMusic.volume = 0.6;
+  }
 
+  // 2. Save the time every second so we don't lose progress
+  window.bgMusic.ontimeupdate = function() {
+    localStorage.setItem("musicTime", window.bgMusic.currentTime);
+  };
+
+  // 3. When the page loads, check if there's a saved time
+  window.addEventListener("load", () => {
+    const savedTime = localStorage.getItem("musicTime");
+    if (savedTime) {
+      window.bgMusic.currentTime = parseFloat(savedTime);
+    }
+
+    // 4. Try to play. Note: Browsers usually need one click to allow audio.
+    // Since your app has buttons, once she clicks "തുടങ്ങാം", it will play forever.
+    window.bgMusic.play().catch(() => {
+        console.log("Waiting for user interaction to play music...");
+    });
+  });
+
+  // 5. Keep playing even if she clicks a link (helps with smooth transition)
+  window.addEventListener("beforeunload", () => {
+     localStorage.setItem("musicTime", window.bgMusic.currentTime);
+  });
+</script>
 </body>
 </html>
