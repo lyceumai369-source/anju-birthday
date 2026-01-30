@@ -68,7 +68,7 @@
 <body>
 
   <div class="box">
-   <div class="photo" id="secretPhoto">
+    <div class="photo">
       <img src="assets/images/anju.jpg" alt="Anju">
     </div>
 
@@ -108,7 +108,7 @@
 
     // 🔐 EMERGENCY UNLOCK (ONLY YOU)
     let secret = "";
-    const unlockWord = "broopen"; // you can change this
+    const unlockWord = "anjumol"; // you can change this
 
     document.addEventListener("keydown", (e) => {
       secret += e.key.toLowerCase();
@@ -121,27 +121,7 @@
         secret = secret.slice(-10);
       }
     });
-   // 📱 PHONE EMERGENCY UNLOCK (TAP 7 TIMES)
-let tapCount = 0;
-const secretPhoto = document.getElementById("secretPhoto");
-
-secretPhoto.addEventListener("click", () => {
-  tapCount++;
-
-  if (tapCount === 7) {
-    window.location.href = "main.html";
-  }
-
-  // reset after some time
-  setTimeout(() => {
-    tapCount = 0;
-  }, 4000);
-});
-
-
   </script>
 
 </body>
 </html>
-
-
