@@ -98,54 +98,70 @@
     <div class="timer" id="countdown">Loading…</div>
   </div>
 
-  <script>
-    // 1. REGULAR TIMER LOGIC
-    const openDate = new Date("2026-04-08T00:00:00+05:30").getTime();
+ <script>
+  // 1. REGULAR TIMER LOGIC
+  const openDate = new Date("2026-04-08T00:00:00+05:30").getTime();
 
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const diff = openDate - now;
+  const timer = setInterval(() => {
+    const now = new Date().getTime();
+    const diff = openDate - now;
 
-      if (diff <= 0) {
-        clearInterval(timer);
-        window.location.href = "main.html";
-        return;
-      }
+    if (diff <= 0) {
+      clearInterval(timer);
+      window.location.href = "main.html";
+      return;
+    }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
 
-      document.getElementById("countdown").innerHTML =
-        `${days} ദിവസം ${hours} മണിക്കൂർ<br>${minutes} മിനിറ്റ് ${seconds} സെക്കന്റ്`;
-    }, 1000);
+    document.getElementById("countdown").innerHTML =
+      `${days} ദിവസം ${hours} മണിക്കൂർ<br>${minutes} മിനിറ്റ് ${seconds} സെക്കന്റ്`;
+  }, 1000);
 
-    // 2. MOBILE EMERGENCY UNLOCK (7 TAPS)
-    let count = 0;
-    const photo = document.getElementById('tap-unlock');
+  // 2. STABLE MOBILE EMERGENCY UNLOCK (7 TAPS)
+  let count = 0;
+  let lastTap = 0;
+  const photo = document.getElementById('tap-unlock');
 
-    photo.addEventListener('click', () => {
-      count++;
+  // Use 'touchstart' for instant mobile response
+  const handleTap = (e) => {
+    const now = Date.now();
+    
+    // If the gap between taps is too long (over 800ms), reset the count
+    if (now - lastTap > 800) {
+      count = 0;
+    }
+    
+    count++;
+    lastTap = now;
+
+    // Visual feedback: brief shrink when tapped
+    photo.style.transform = "scale(0.9)";
+    setTimeout(() => { photo.style.transform = "scale(1)"; }, 100);
+
+    // If she taps 7 times
+    if (count === 7) {
+      // Success feedback: Screen flashes white
+      document.body.style.background = "#ffffff";
+      if (navigator.vibrate) navigator.vibrate([50, 50, 50]); 
       
-      // Optional: Add a subtle vibration for each tap (works on some Androids)
-      if (navigator.vibrate) navigator.vibrate(20);
+      setTimeout(() => {
+        window.location.href = "main.html";
+      }, 300);
+    }
+  };
 
-      if (count === 7) {
-        // Change background color for a split second so you know it worked
-        document.body.style.background = "#fff";
-        setTimeout(() => {
-          window.location.href = "main.html";
-        }, 200);
-      }
-
-      // Reset count if she stops tapping for 2 seconds
-      clearTimeout(window.tapReset);
-      window.tapReset = setTimeout(() => {
-        count = 0;
-      }, 2000);
-    });
-  </script>
-
+  // Add listeners for both touch and click
+  photo.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevents zooming on fast taps
+    handleTap();
+  });
+  
+  photo.addEventListener('click', handleTap);
+</script>
 </body>
 </html>
+
